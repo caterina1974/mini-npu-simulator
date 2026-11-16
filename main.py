@@ -363,7 +363,17 @@ def json_mode():
             raise ValueError(f"{pattern_name}: input 또는 expected 항목이 없습니다.")
 
         try:
-            size = len(item["input"])
+            name_parts = pattern_name.split("_")
+            if (
+                len(name_parts) != 3
+                or name_parts[0] != "size"
+                or not name_parts[1].isdigit()
+                or not name_parts[2].isdigit()
+            ):
+                raise ValueError("패턴 이름은 size_N_idx 형식이어야 합니다.")
+            size = int(name_parts[1])
+            if size < 1:
+                raise ValueError("패턴 크기 N은 1 이상이어야 합니다.")
             filter_key = f"size_{size}"
             if filter_key not in filters:
                 raise ValueError(f"{filter_key} 필터가 JSON에 없습니다.")
